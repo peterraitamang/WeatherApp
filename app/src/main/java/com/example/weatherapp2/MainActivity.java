@@ -48,57 +48,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         b = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(b.getRoot());
-
-
-
-        b.btnSearchManually.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Activity_city_finder.class);
-                startActivity(intent);
-            }
-        });
+        getSupportActionBar().setTitle("Find My Weather");
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        getWeatherForCurrentLocation();
-//    }
-        @Override
-        protected void onResume() {
-            super.onResume();
-            Intent mIntent=getIntent();
-            String city= mIntent.getStringExtra("City");
-            if(city!=null)
-            {
-                getWeatherForNewCity(city);
-            }
-            else
-            {
-                getWeatherForCurrentLocation();
-            }
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent mIntent = getIntent();
+        String city = mIntent.getStringExtra("City");
+        if (city != null) {
+            getWeatherForNewCity(city);
+        } else {
+            getWeatherForCurrentLocation();
         }
 
+    }
 
-            private void getWeatherForNewCity(String city)
-            {
-                RequestParams params=new RequestParams();
-                params.put("q",city);
-                params.put("appid",APP_ID);
-                letsDoSomeNetworking(params);
+    private void getWeatherForNewCity(String city) {
+        RequestParams params = new RequestParams();
+        params.put("q", city);
+        params.put("appid", APP_ID);
+        letsDoSomeNetworking(params);
 
-            }
-
+    }
 
     private void getWeatherForCurrentLocation() {
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new LocationListener() {
             @Override
-            public void onLocationChanged(@NonNull Location location) {
+            public void onLocationChanged(Location location) {
 
                 String Latitude = String.valueOf(location.getLatitude());
                 String Longitude = String.valueOf(location.getLongitude());
@@ -108,8 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 params.put("lon", Longitude);
                 params.put("appid", APP_ID);
                 letsDoSomeNetworking(params);
-
-
             }
 
             @Override
@@ -142,60 +119,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(requestCode==REQUEST_CODE)
-        {
-            if (grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED)
-            {
-                Toast.makeText(MainActivity.this, "Location Fetched Successfully.", Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(MainActivity.this, "Location Fetched Successfully.", Toast.LENGTH_SHORT).show();
                 getWeatherForCurrentLocation();
-            }
-            else
-            {
+            } else {
                 //user denied the permission
             }
         }
     }
+
     private void letsDoSomeNetworking(RequestParams params) {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(WEATHER_URL, params, new JsonHttpResponseHandler()
-        {
+        client.get(WEATHER_URL, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 //                super.onSuccess(statusCode, headers, response);
-                Toast.makeText(MainActivity.this, "Data Received Suceess!", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(MainActivity.this, "Data Received Success!", Toast.LENGTH_SHORT).show();
                 WeatherData weatherData = WeatherData.fromJson(response);
                 updateUI(weatherData);
-
             }
-
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
 //                super.onFailure(statusCode, headers, throwable, errorResponse);
-
             }
         });
     }
+
     private void updateUI(WeatherData weatherData) {
 
         b.tvTemperature.setText(weatherData.getmTemperature());
         b.cityName.setText(weatherData.getmCity());
         b.weatherCondition.setText(weatherData.getmWeatherType());
-        int resourceID = getResources().getIdentifier(weatherData.getmIcon(),"drawable", getPackageName());
+        int resourceID = getResources().getIdentifier(weatherData.getmIcon(), "drawable", getPackageName());
         b.ivIcon.setImageResource(resourceID);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(mLocationManager!=null)
-        {
+        if (mLocationManager != null) {
             mLocationManager.removeUpdates(mLocationListener);
         }
     }

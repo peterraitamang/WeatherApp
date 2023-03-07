@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:background="#A0ADF6"
-    android:padding="30dp">
+    android:padding="50dp">
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:src="@drawable/ic_search"
@@ -40,18 +40,5 @@
         android:text="Fetching_____"
         android:textColor="@color/white"
         android:textSize="35sp" />
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_search_manually"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cityName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/custom_button"
-        android:text="Search manually"
-        android:textSize="15sp"
-        android:textColor="@color/white"
-        android:padding="30sp"
-        android:gravity="center"/>
 
 </RelativeLayout>
